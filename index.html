@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Maquina de turing</title>
+    <style type="text/css">
+        .inline{
+            display:inline-block;
+        }
+        .margin{
+            margin-right: 20px;
+        }
+        input[value="iniciar maquina"]{
+            margin-top: 30px;
+            padding: 10px;
+            background-color: cornflowerblue;
+            border: 0;
+            color: white;
+            font-weight: bold;
+            border-radius: 3px;
+            box-shadow: -3px 7px 15px gray;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <p>Configuración</p>
+    <div>
+        <label for="estado">Estado:</label>
+        <input type="text" id="estado" placeholder="ej: q1" >
+        <label for="cadena">Cadena:</label>
+        <input type="text" id="cadena" placeholder="ej: ababb">
+    </div>
+    <p>Función de transición</p>
+    <div>
+        <input type="text" class="inline" id="transicion" placeholder="ej: q1,a=q2,b,r" >
+        <input type="button" value="ingresar Transicion" id="ingresart">
+    </div>
+    <input type="button" value="iniciar maquina" id="iniciar">
+    <div id="padre"></div>
+    <script type="text/javascript">
+        var Transicion, estado, cadena, control=0, vectorRegla=[];
+        document.getElementById("iniciar").disabled=true;
+        function transiciones(){
+            document.getElementById("iniciar").disabled=false;
+            Transicion=document.getElementById("transicion").value;
+            vectorRegla[control]=Transicion;
+            alert(vectorRegla);
+            control++;
+        }
+        //1 3 6 8 10
+        function maquinaTuring(){
+            var i=0, sw=0, sw2;
+            estado=document.getElementById("estado").value;
+            cadena=document.getElementById("cadena").value;
+            mostrarCambios=document.getElementById("padre");
+            while(i<cadena.length){
+                sw2=0;
+                for(var j=0; j<vectorRegla.length; j++){
+                    if(estado.charAt(1)==vectorRegla[j].charAt(1) && cadena.charAt(i)==vectorRegla[j].charAt(3)){
+                       estado="q"+vectorRegla[j].charAt(6);
+                       cadena=cadena.replace(cadena.charAt(i),vectorRegla[j].charAt(8));
+                       alert(cadena);
+                        if(vectorRegla[j].charAt(10)=="l" && i==0){
+                            return alert("Error: En la primera regla que coincida con la configuración, no se puede ir hacia la izquierda");
+                           }
+                        if(vectorRegla[j].charAt(10)=="r"){
+                            ++i;
+                          }else if(vectorRegla[j].charAt(10)=="l" && i!=0){
+                            --i;
+                           }
+                        sw=1;
+                        sw2=1;
+                        break;
+                    }
+                }
+                if(sw==0){ 
+                    return alert("No hay ninguna regla de transición que coincida con la configuarción");
+                }
+                if(sw2==1){
+                        var p= document.createElement("p");
+                        mostrarCambios.appendChild(p);
+                        p.textContent=" "+estado+" , "+cadena;
+                    }else{
+                        ++i;
+                    }
+            }
+        }
+        document.getElementById("ingresart").addEventListener("click",transiciones);
+        document.getElementById("iniciar").addEventListener("click",maquinaTuring);
+    </script>
+</body>
+</html>
